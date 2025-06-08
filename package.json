@@ -1,0 +1,27 @@
+{
+  "name": "betson_interview",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --project=ui-tests-desktop --project=ui-tests-mobile",
+    "test:ui:desktop": "playwright test --project=ui-tests-desktop",
+    "test:ui:mobile": "playwright test --project=ui-tests-mobile",
+    "test:api": "playwright test --project=api-tests",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen",
+    "install-browsers": "playwright install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.30",
+    "dotenv": "^16.4.5",
+    "playwright": "^1.52.0",
+    "typescript": "^5.8.3"
+  },
+  "description": ""
+}
