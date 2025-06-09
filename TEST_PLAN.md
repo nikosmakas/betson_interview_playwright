@@ -127,3 +127,103 @@ When they click the "Cancel" or "Back" button
 Then they should return to the cart without losing data
 And the cart should still reflect the selected items correctly
 
+
+
+API TESTING
+
+##Endpoint Group 1: /pet
+# Test Case 1.1 — Create Pet (POST /pet)
+
+Goal: Successfully create a new pet with valid schema
+
+Method: POST /pet
+
+Request Body:
+{
+  "id": 10001,
+  "name": "Fluffy",
+  "category": { "id": 1, "name": "cat" },
+  "photoUrls": ["https://example.com/fluffy.jpg"],
+  "tags": [{ "id": 1, "name": "cute" }],
+  "status": "available"
+}
+Expected Result: HTTP 200 OK and response contains the same id and name.
+
+# Test Case 1.2 — Fail to Create Pet with Invalid Schema
+Goal: Verify API returns an error for invalid data
+
+Method: POST /pet
+
+Request Body: Missing required fields (e.g., no name)
+
+Expected Result: HTTP 400 Bad Request or validation error (behavior may vary based on implementation)
+
+# Test Case 1.3 — Get Pet by ID (GET /pet/{petId})
+Goal: Retrieve a pet that was previously created
+
+Steps:
+Create a pet with known ID
+Use that ID to GET /pet/{id}
+Expected Result: HTTP 200 OK and matching pet data
+
+# Test Case 1.4 — Get Non-Existing Pet
+Goal: Verify that requesting a nonexistent pet returns 404
+
+Method: GET /pet/99999999
+
+Expected Result: HTTP 404 Not Found
+
+# Test Case 1.5 — Update Existing Pet (PUT /pet)
+Goal: Update the status of an existing pet
+
+Steps:
+Create a pet with status: available
+Send PUT /pet with updated status: sold
+Expected Result: HTTP 200 OK, updated pet reflects new status
+
+## Endpoint Group 2: /store
+# Test Case 2.1 — Get Inventory (GET /store/inventory)
+Goal: Retrieve pet status inventory
+
+Method: GET /store/inventory
+
+Expected Result: HTTP 200 OK and a JSON map like:
+{
+  "available": 5,
+  "pending": 2,
+  "sold": 1
+}
+
+# Test Case 2.2 — Place Order (POST /store/order)
+Goal: Successfully create a new order
+
+Request Body:
+{
+  "id": 5001,
+  "petId": 10001,
+  "quantity": 1,
+  "shipDate": "2025-06-08T10:00:00.000Z",
+  "status": "placed",
+  "complete": true
+}
+Expected Result: HTTP 200 OK with matching order details
+
+# Test Case 2.3 — Get Order by ID (GET /store/order/{orderId})
+Goal: Retrieve an order that was placed in the previous test
+
+Steps:
+Create an order
+Fetch it by ID
+
+Expected Result: HTTP 200 OK, order data matches creation
+
+# Test Case 2.4 — Delete Order by ID (DELETE /store/order/{orderId})
+Goal: Delete a previously created order
+
+Steps:
+Place an order
+Delete it using DELETE /store/order/{orderId}
+Verify deletion by trying to GET the order again
+
+Expected Result: HTTP 200 OK on delete, then 404 Not Found on fetch
+

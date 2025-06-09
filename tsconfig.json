@@ -16,7 +16,8 @@
       "@utils/*": ["utils/*"],
       "@data/*": ["data/*"],
       "@tests/*": ["tests/*"]
-    }
+    },
+    "types": ["node", "@cucumber/cucumber"]
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]
