@@ -1,0 +1,31 @@
+{
+  "ui": {
+    "baseUrl": "https://www.saucedemo.com",
+    "endpoints": {
+      "login": "/",
+      "inventory": "/inventory.html",
+      "cart": "/cart.html",
+      "checkout": "/checkout-step-one.html",
+      "checkoutOverview": "/checkout-step-two.html",
+      "checkoutComplete": "/checkout-complete.html"
+    }
+  },
+  "api": {
+    "baseUrl": "https://petstore.swagger.io/v2",
+    "apiKey": "special-key",
+    "endpoints": {
+      "pet": {
+        "create": "/pet",
+        "getById": "/pet/{petId}",
+        "update": "/pet",
+        "delete": "/pet/{petId}"
+      },
+      "store": {
+        "inventory": "/store/inventory",
+        "order": "/store/order",
+        "orderById": "/store/order/{orderId}",
+        "deleteOrder": "/store/order/{orderId}"
+      }
+    }
+  }
+} 
