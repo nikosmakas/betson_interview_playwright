@@ -4,6 +4,7 @@
     "endpoints": {
       "login": "/",
       "inventory": "/inventory.html",
+      "inventoryItem": "/inventory-item.html",
       "cart": "/cart.html",
       "checkout": "/checkout-step-one.html",
       "checkoutOverview": "/checkout-step-two.html",

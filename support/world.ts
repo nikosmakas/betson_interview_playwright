@@ -1,5 +1,8 @@
 import { setWorldConstructor, World, IWorldOptions } from '@cucumber/cucumber';
 import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
+import { CartPage } from '../pages/CartPage';
+import { InventoryPage } from '../pages/InventoryPage';
+import { LoginPage } from '../pages/LoginPage';
 
 // Επεκτείνουμε το default World του Cucumber
 export class CustomWorld extends World {
@@ -7,6 +10,9 @@ export class CustomWorld extends World {
     private browser: Browser | undefined;
     private context: BrowserContext | undefined;
     public page: Page | undefined;
+    public cartPage?: CartPage;
+    public inventoryPage?: InventoryPage;
+    public loginPage?: LoginPage;
 
     // Constructor που καλεί τον parent constructor
     constructor(options: IWorldOptions) {
