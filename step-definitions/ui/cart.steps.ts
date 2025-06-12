@@ -5,7 +5,7 @@ import { InventoryPage } from '../../pages/InventoryPage';
 import { LoginPage } from '../../pages/LoginPage';
 import { ProductDetailsPage } from '../../pages/ProductDetailsPage';
 import { CustomWorld } from '../../support/world';
-import users from '../../data/users.json';
+import { config } from '../../config';
 
 Given('I am on the home page', async function(this: CustomWorld) {
     if (!this.page) throw new Error('Page is not initialized');
@@ -16,7 +16,7 @@ Given('I am on the home page', async function(this: CustomWorld) {
 Given('I am logged in with valid credentials', async function(this: CustomWorld) {
     if (!this.page) throw new Error('Page is not initialized');
     const loginPage = new LoginPage(this.page);
-    const user = users.standard_user;
+    const user = config.ui.users.standard_user;
     await loginPage.login(user.username, user.password);
 });
 
@@ -79,43 +79,6 @@ When('I navigate to the cart page', async function(this: CustomWorld) {
     if (!this.page) throw new Error('Page is not initialized');
     const cartPage = new CartPage(this.page);
     await cartPage.navigateToCart();
-});
-
-When('I navigate to {string} details page', async function(this: CustomWorld, productName: string) {
-    if (!this.page) throw new Error('Page is not initialized');
-    const inventoryPage = new InventoryPage(this.page);
-    await inventoryPage.clickOnProduct(productName);
-});
-
-When('I click {string} from details page', async function(this: CustomWorld, action: string) {
-    if (!this.page) throw new Error('Page is not initialized');
-    const productDetailsPage = new ProductDetailsPage(this.page);
-    if (action.toLowerCase() === 'remove') {
-        await productDetailsPage.removeFromCart();
-    } else {
-        throw new Error(`Unknown action: ${action}`);
-    }
-});
-
-Then('the product name should be {string}', async function(this: CustomWorld, expectedName: string) {
-    if (!this.page) throw new Error('Page is not initialized');
-    const productDetailsPage = new ProductDetailsPage(this.page);
-    const name = await productDetailsPage.getProductName();
-    expect(name).toBe(expectedName);
-});
-
-Then('the product price should be {string}', async function(this: CustomWorld, expectedPrice: string) {
-    if (!this.page) throw new Error('Page is not initialized');
-    const productDetailsPage = new ProductDetailsPage(this.page);
-    const price = await productDetailsPage.getProductPrice();
-    expect(price).toBe(expectedPrice);
-});
-
-Then('the product description should match the inventory page', async function(this: CustomWorld) {
-    if (!this.page) throw new Error('Page is not initialized');
-    const productDetailsPage = new ProductDetailsPage(this.page);
-    const description = await productDetailsPage.getProductDescription();
-    expect(description).toBeTruthy();
 });
 
 Given('I have {string} in my cart', async function(this: CustomWorld, productName: string) {
@@ -181,7 +144,7 @@ Given('I am on the cart page', async function(this: CustomWorld) {
     await cartPage.navigateToCart();
 });
 
-When('I click {string}', async function(this: CustomWorld, button: string) {
+When('I click {string} button in cart page', async function(this: CustomWorld, button: string) {
     if (!this.page) throw new Error('Page is not initialized');
     const cartPage = new CartPage(this.page);
     if (button === 'Continue Shopping') {
@@ -193,12 +156,12 @@ When('I click {string}', async function(this: CustomWorld, button: string) {
 
 Then('I should be redirected to the inventory page', async function(this: CustomWorld) {
     if (!this.page) throw new Error('Page is not initialized');
-    await this.page.waitForURL('**/inventory.html');
+    await this.page.waitForURL(`**${config.ui.endpoints.inventory}`);
 });
 
 Then('I should be redirected to the checkout page', async function(this: CustomWorld) {
     if (!this.page) throw new Error('Page is not initialized');
-    await this.page.waitForURL('**/checkout-step-one.html');
+    await this.page.waitForURL(`**${config.ui.endpoints.checkout}`);
 });
 
 Given('I have items in my cart', async function(this: CustomWorld) {

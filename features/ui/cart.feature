@@ -24,7 +24,7 @@ Feature: Shopping Cart Functionality
   Scenario: Proceed to checkout
     Given I have items in my cart
     When I navigate to the cart page
-    And I click "Checkout"
+    And I click "Checkout" button in cart page
     Then I should be redirected to the checkout page 
 
   Scenario: Remove item from cart from inventory page
@@ -33,7 +33,6 @@ Feature: Shopping Cart Functionality
     And I navigate to the cart page
     Then the cart icon should update 
     And "Sauce Labs Backpack" should not appear in the cart
-
 
   Scenario: Remove item from cart page
     Given I have multiple items in my cart
@@ -44,5 +43,5 @@ Feature: Shopping Cart Functionality
 
   Scenario: Continue shopping from cart page
     Given I am on the cart page
-    When I click "Continue Shopping"
+    When I click "Continue Shopping" button in cart page
     Then I should be redirected to the inventory page
