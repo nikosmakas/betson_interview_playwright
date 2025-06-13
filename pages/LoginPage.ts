@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { testConfig } from '../config/test.config';
+import { config } from '../config';
 
 /**
  * LoginPage class represents the login page of the application.
@@ -27,7 +27,7 @@ export class LoginPage {
      */
     async navigateToLogin(): Promise<void> {
         try {
-            await this.page.goto(testConfig.baseUrl);
+            await this.page.goto(`${config.ui.baseUrl}${config.ui.endpoints.login}`);
         } catch (error) {
             throw new Error(`Failed to navigate to login page: ${error}`);
         }

@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import urls from '../data/urls.json';
+import { config } from '../config';
 
 export class InventoryPage {
     private page: Page;
@@ -26,7 +26,7 @@ export class InventoryPage {
      * Navigate to the inventory page
      */
     async navigateToInventory() {
-        await this.page.goto(urls.ui.baseUrl + urls.ui.endpoints.inventory);
+        await this.page.goto(`${config.ui.baseUrl}${config.ui.endpoints.inventory}`);
     }
 
     /**
@@ -62,13 +62,6 @@ export class InventoryPage {
     }
 
     /**
-     * Navigate to cart
-     */
-    async goToCart() {
-        await this.page.locator(this.selectors.cartIcon).click();
-    }
-
-    /**
      * Add all products to cart
      */
     async addAllProductsToCart() {
@@ -93,7 +86,7 @@ export class InventoryPage {
                 const text = await link.textContent();
                 if (text?.trim() === productName) {
                     await link.click();
-                    await this.page.waitForURL('**/inventory-item.html*', { timeout: 5000 });
+                    await this.page.waitForURL(`**${config.ui.endpoints.inventoryItem}*`, { timeout: 5000 });
                     return;
                 }
             }

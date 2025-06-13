@@ -90,27 +90,6 @@ export class CartPage {
     }
 
     /**
-     * Get details of a specific item in the cart
-     * @param itemName - The name of the item to get details for
-     * @returns The item details
-     * @throws {Error} If getting item details fails
-     */
-    async getItemDetails(itemName: string): Promise<CartItem> {
-        try {
-            const items = await this.getCartItems();
-            const item = items.find(item => item.name === itemName);
-            
-            if (!item) {
-                throw new Error(`Item "${itemName}" not found in cart`);
-            }
-
-            return item;
-        } catch (error) {
-            throw new Error(`Failed to get item details: ${error}`);
-        }
-    }
-
-    /**
      * Proceed to checkout
      * @throws {Error} If proceeding to checkout fails
      */
@@ -153,29 +132,6 @@ export class CartPage {
             return items.some(item => item.name === productName);
         } catch (error) {
             throw new Error(`Failed to check if item is in cart: ${error}`);
-        }
-    }
-
-    /**
-     * Get the total price of all items in the cart
-     * @returns The total price
-     * @throws {Error} If calculating the total fails
-     */
-    async getCartTotal(): Promise<number> {
-        try {
-            const items = await this.getCartItems();
-            let total = 0;
-            for (const item of items) {
-                const price = parseFloat(item.price.replace('$', ''));
-                const quantity = parseInt(item.quantity);
-                if (isNaN(price) || isNaN(quantity)) {
-                    throw new Error(`Invalid price or quantity for item ${item.name}`);
-                }
-                total += price * quantity;
-            }
-            return total;
-        } catch (error) {
-            throw new Error(`Failed to get cart total: ${error}`);
         }
     }
 

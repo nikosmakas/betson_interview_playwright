@@ -1,14 +1,21 @@
 import * as dotenv from 'dotenv';
+import * as path from 'path';
+import * as fs from 'fs';
+
+// Load environment variables
 dotenv.config();
+
+// Load JSON configs
+const urlsConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/urls.json'), 'utf-8'));
+const usersConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/users.json'), 'utf-8'));
 
 // Environment
 const ENV = process.env.NODE_ENV || 'dev';
 
 // Base URLs
 const BASE_URLS = {
-    dev: process.env.BASE_URL_DEV || 'https://www.saucedemo.com',
-    staging: process.env.BASE_URL_STAGING || 'https://staging.saucedemo.com',
-    prod: process.env.BASE_URL_PROD || 'https://www.saucedemo.com'
+    ui: process.env.UI_BASE_URL || urlsConfig.ui.baseUrl,
+    api: process.env.API_BASE_URL || urlsConfig.api.baseUrl
 };
 
 // Browser Settings
@@ -46,12 +53,38 @@ const VIDEO = {
     path: process.env.VIDEO_PATH || './test-results/videos'
 };
 
-export const testConfig = {
+// API Settings
+const API = {
+    baseUrl: BASE_URLS.api,
+    apiKey: urlsConfig.api.apiKey,
+    endpoints: urlsConfig.api.endpoints
+};
+
+// UI Settings
+const UI = {
+    baseUrl: BASE_URLS.ui,
+    endpoints: urlsConfig.ui.endpoints,
+    users: usersConfig
+};
+
+// Export the complete configuration
+export const config = {
     env: ENV,
-    baseUrl: BASE_URLS[ENV as keyof typeof BASE_URLS],
     browser: BROWSER,
     timeouts: TIMEOUTS,
     retry: RETRY,
     screenshot: SCREENSHOT,
-    video: VIDEO
-}; 
+    video: VIDEO,
+    api: API,
+    ui: UI
+} as const;
+
+// Type definitions for better TypeScript support
+export type Config = typeof config;
+export type ApiConfig = typeof config.api;
+export type UiConfig = typeof config.ui;
+export type BrowserConfig = typeof config.browser;
+export type TimeoutsConfig = typeof config.timeouts;
+export type RetryConfig = typeof config.retry;
+export type ScreenshotConfig = typeof config.screenshot;
+export type VideoConfig = typeof config.video; 

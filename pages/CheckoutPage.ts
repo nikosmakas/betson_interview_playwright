@@ -8,13 +8,8 @@ export class CheckoutPage {
     private lastNameInput = '[data-test="lastName"]';
     private postalCodeInput = '[data-test="postalCode"]';
     private continueButton = '[data-test="continue"]';
-    private cancelButton = '[data-test="cancel"]';
     private finishButton = '[data-test="finish"]';
-    private errorMessage = '[data-test="error"]';
-    private summaryInfo = '[data-test="summary-info"]';
-    private summarySubtotal = '[data-test="summary-subtotal"]';
-    private summaryTax = '[data-test="summary-tax"]';
-    private summaryTotal = '[data-test="summary-total"]';
+    private summaryInfo = '[data-test="complete-header"]';
 
     constructor(page: Page) {
         this.page = page;
@@ -34,14 +29,6 @@ export class CheckoutPage {
         await continueButton.click();
     }
 
-    async cancelCheckout() {
-        const cancelButton = await this.page.$(this.cancelButton);
-        if (!cancelButton) {
-            throw new Error('Cancel button not found');
-        }
-        await cancelButton.click();
-    }
-
     async finishCheckout() {
         const finishButton = await this.page.$(this.finishButton);
         if (!finishButton) {
@@ -50,35 +37,11 @@ export class CheckoutPage {
         await finishButton.click();
     }
 
-    async getErrorMessage() {
-        const errorElement = await this.page.$(this.errorMessage);
-        if (!errorElement) {
-            return null;
-        }
-        return await errorElement.textContent();
-    }
-
     async getSummaryInfo() {
         const summaryElement = await this.page.$(this.summaryInfo);
         if (!summaryElement) {
             throw new Error('Summary information not found');
         }
         return await summaryElement.textContent();
-    }
-
-    async getSummaryTotals() {
-        const subtotalElement = await this.page.$(this.summarySubtotal);
-        const taxElement = await this.page.$(this.summaryTax);
-        const totalElement = await this.page.$(this.summaryTotal);
-
-        if (!subtotalElement || !taxElement || !totalElement) {
-            throw new Error('One or more summary total elements not found');
-        }
-
-        return {
-            subtotal: await subtotalElement.textContent(),
-            tax: await taxElement.textContent(),
-            total: await totalElement.textContent()
-        };
     }
 } 
