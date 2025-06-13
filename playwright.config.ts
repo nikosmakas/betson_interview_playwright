@@ -38,13 +38,6 @@ export default defineConfig({
       },
     },
     {
-      name: 'UI Tests - Mobile',
-      testMatch: /.*\.feature$/,
-      use: {
-        ...devices['iPhone 12'],
-      },
-    },
-    {
       name: 'API Tests',
       testMatch: /.*\.test\.ts$/,
       use: {

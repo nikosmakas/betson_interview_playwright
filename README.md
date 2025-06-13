@@ -38,36 +38,32 @@ npm install
 
 ## Εκτέλεση Tests
 
-### Όλα τα Tests
+### UI Tests (Cucumber)
+
+Τα UI tests υλοποιούνται με Cucumber (Gherkin + step definitions) και τρέχουν με την εντολή:
+
 ```bash
-npx playwright test
+npx cucumber-js features/ui --require step-definitions/ui
 ```
 
-### UI Tests
+Για να τρέξετε συγκεκριμένο feature file:
+
 ```bash
-# Όλα τα UI tests
-npm run cucumber
-
-# Desktop UI tests
-npx playwright test --project="UI Tests - Desktop"
-
-# Mobile UI tests
-npx playwright test --project="UI Tests - Mobile"
+npx cucumber-js features/ui/login.feature --require step-definitions/ui
 ```
 
-### API Tests
+### API Tests (Playwright)
+
+Τα API tests υλοποιούνται σε TypeScript αρχεία και τρέχουν με Playwright:
+
 ```bash
-# Όλα τα API tests
 npx playwright test --project="API Tests"
-
-# Συγκεκριμένο API test file
-npx playwright test tests/petstore.test.ts
 ```
 
-### Συγκεκριμένα Features
+Για να τρέξετε συγκεκριμένο API test file:
+
 ```bash
-# Συγκεκριμένο feature file
-npx cucumber-js features/ui/login.feature
+npx playwright test tests/petstore.test.ts --project="API Tests"
 ```
 
 ## Αναφορές
