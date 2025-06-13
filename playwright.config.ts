@@ -1,8 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
+import { configLoader } from './config/dataLoader';
 
-// Φόρτωση των environment variables
-dotenv.config();
+/**
+ * Playwright Configuration
+ * 
+ * Αυτό το αρχείο ρυθμίζει:
+ * 1. Τα projects για UI και API tests
+ * 2. Τις παραμέτρους εκτέλεσης των tests
+ * 3. Τις ρυθμίσεις περιβάλλοντος
+ * 
+ * Χρησιμοποιεί το ConfigLoader για πρόσβαση στις ρυθμίσεις
+ */
 
 export default defineConfig({
   testDir: './tests',
@@ -14,7 +22,7 @@ export default defineConfig({
   reporter: 'html',
   
   use: {
-    baseURL: 'https://petstore.swagger.io/v2',
+    baseURL: configLoader.uiBaseUrl,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -22,49 +30,26 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'ui-tests-desktop',
+      name: 'UI Tests - Desktop',
+      testMatch: /.*\.feature$/,
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: process.env.UI_BASE_URL,
+        viewport: { width: 1280, height: 720 },
       },
-      testMatch: /.*\.ui\.spec\.ts/,
     },
     {
-      name: 'ui-tests-mobile',
+      name: 'UI Tests - Mobile',
+      testMatch: /.*\.feature$/,
       use: {
-        ...devices['Pixel 5'],  // Google Pixel 5 mobile device
-        baseURL: process.env.UI_BASE_URL,
+        ...devices['iPhone 12'],
       },
-      testMatch: /.*\.ui\.spec\.ts/,
     },
-    // Firefox configuration (commented out)
-    // {
-    //   name: 'ui-tests-firefox',
-    //   use: {
-    //     ...devices['Desktop Firefox'],
-    //     baseURL: process.env.UI_BASE_URL,
-    //   },
-    //   testMatch: /.*\.ui\.spec\.ts/,
-    // },
-    // WebKit configuration (commented out)
-    // {
-    //   name: 'ui-tests-webkit',
-    //   use: {
-    //     ...devices['Desktop Safari'],
-    //     baseURL: process.env.UI_BASE_URL,
-    //   },
-    //   testMatch: /.*\.ui\.spec\.ts/,
-    // },
     {
-      name: 'api-tests',
+      name: 'API Tests',
+      testMatch: /.*\.test\.ts$/,
       use: {
-        baseURL: process.env.API_BASE_URL,
+        baseURL: configLoader.apiBaseUrl,
       },
-      testMatch: /.*\.api\.spec\.ts/,
     },
   ],
 }); 

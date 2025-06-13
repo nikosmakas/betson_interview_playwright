@@ -1,147 +1,159 @@
-# Technical Task Report: UI & API Testing Framework
+# Technical Report: E2E Testing Framework
 
-## Part 1: UI Testing Report
+## 1. Framework Architecture Choices
 
-### Framework Architecture Choices
+### 1.1 Technology Stack Selection
 
-#### Technology Stack
-- **Playwright**: Επιλέχθηκε ως το βασικό εργαλείο για UI testing λόγω:
-  - Εγγενής υποστήριξη για TypeScript
-  - Αυτόματη αναμονή για στοιχεία (auto-waiting)
-  - Cross-browser testing (Chromium, Firefox, WebKit)
-  - Ενσωματωμένη υποστήριξη για API testing
-  - Καλύτερη απόδοση σε σχέση με το Selenium
+#### Playwright
+- **Cross-browser Testing**: Υποστηρίζει Chromium, Firefox, και WebKit
+- **Auto-waiting**: Ενσωματωμένη υποστήριξη για intelligent waiting
+- **API Testing**: Ενσωματωμένη υποστήριξη για API testing
+- **TypeScript Support**: Πρώτης τάξεως υποστήριξη για TypeScript
+- **Parallel Execution**: Υποστήριξη για parallel test execution
+- **Trace Viewer**: Εξαιρετικό debugging tool
 
-#### Project Structure
+#### Cucumber
+- **BDD Approach**: Επιτρέπει τη συγγραφή tests σε μορφή Gherkin
+- **Business Readability**: Tests είναι κατανοητά από non-technical stakeholders
+- **Reusability**: Step definitions μπορούν να επαναχρησιμοποιηθούν
+- **Documentation**: Feature files λειτουργούν ως ζωντανή τεκμηρίωση
+
+#### TypeScript
+- **Type Safety**: Παρέχει static type checking
+- **Better IDE Support**: Autocomplete και error detection
+- **Maintainability**: Καλύτερη διαχείριση κώδικα σε μεγάλα projects
+- **Interface Definitions**: Επιτρέπει τον ορισμό σαφών contracts
+
+### 1.2 Project Structure
+
 ```
-├── features/
-│   ├── ui/
-│   │   ├── login.feature
-│   │   └── inventory.feature
-│   └── api/
-│       └── pet.feature
-├── step-definitions/
-│   ├── ui/
-│   │   ├── login.steps.ts
-│   │   └── inventory.steps.ts
-│   └── api/
-│       └── pet.steps.ts
-├── pages/
-│   ├── login.page.ts
-│   └── inventory.page.ts
-├── utils/
-│   └── apiClient.ts
-└── data/
-    └── urls.json
+├── config/             # Κεντρικοποιημένη διαχείριση ρυθμίσεων
+├── data/              # Test data σε JSON format
+├── features/          # Cucumber feature files
+├── pages/            # Page Object Models
+├── step-definitions/ # Cucumber step definitions
+├── support/          # Cucumber support files
+├── tests/            # Playwright test files
+└── utils/            # Βοηθητικές συναρτήσεις
 ```
 
-#### Design Patterns
-1. **Page Object Model (POM)**
-   - Χωρισμός της UI λογικής από τα test steps
-   - Επανάχρηση κώδικα και ευκολότερη συντήρηση
-   - Καλύτερη οργάνωση των selectors
+#### Rationale
+- **Separation of Concerns**: Κάθε φάκελος έχει συγκεκριμένο ρόλο
+- **Maintainability**: Εύκολη εύρεση και διαχείριση αρχείων
+- **Scalability**: Δομή υποστηρίζει μεγάλα projects
+- **Test Organization**: Σαφής διάκριση μεταξύ UI και API tests
 
-2. **Cucumber BDD**
-   - Αναγνώσιμα test scenarios σε Gherkin syntax
-   - Καλύτερη επικοινωνία με μη-τεχνικούς stakeholders
-   - Ευκολότερη διαχείριση test data
+### 1.3 Design Patterns
 
-### Test Implementation
+#### Page Object Model (POM)
+- **Encapsulation**: Κάθε page object κρύβει τα implementation details
+- **Reusability**: Page objects μπορούν να επαναχρησιμοποιηθούν
+- **Maintainability**: Αλλαγές στο UI απαιτούν αλλαγές μόνο στο αντίστοιχο page object
+- **Type Safety**: TypeScript interfaces για page elements
+
+#### Behavior Driven Development (BDD)
+- **Feature Files**: Περιγραφή συμπεριφοράς σε Gherkin syntax
+- **Step Definitions**: Υλοποίηση των steps σε TypeScript
+- **Business Readability**: Tests είναι κατανοητά από όλους τους stakeholders
+- **Living Documentation**: Feature files λειτουργούν ως τεκμηρίωση
+
+#### API Client Pattern
+- **Request Fixture**: Playwright's request fixture ως API client
+- **Centralized Configuration**: `configLoader` για πρόσβαση σε endpoints
+- **Type Safety**: TypeScript interfaces για request/response objects
+- **Retry Logic**: Ενσωματωμένη υποστήριξη για eventual consistency
+
+### 1.4 Centralized Configuration
+
+#### ConfigLoader Singleton
+- **Single Source of Truth**: Όλες οι ρυθμίσεις διαχειρίζονται από ένα σημείο
+- **Type Safety**: TypeScript interfaces για configuration objects
+- **Environment Agnostic**: Δεν εξαρτάται από .env files
+- **Easy Maintenance**: Αλλαγές στις ρυθμίσεις γίνονται σε ένα μέρος
+
+#### JSON Configuration
+- **Readability**: Human-readable format
+- **Version Control**: Εύκολη παρακολούθηση αλλαγών
+- **No Sensitive Data**: Κατάλληλο για demo/playground APIs
+- **Easy to Modify**: Απλό format για αλλαγές
+
+## 2. Test Implementation
+
+### 2.1 UI Testing
 
 #### Selected Features
 1. **Login Functionality**
    - Valid login
    - Invalid credentials
    - Locked out user
+   - Empty fields validation
 
-2. **Inventory Management**
+2. **Shopping Cart**
    - Add items to cart
    - Remove items from cart
-   - Sort products
+   - Update quantities
 
-### Technical Decisions & Challenges
+#### Test Cases
+```gherkin
+Feature: Login Functionality
+  Scenario: Valid login
+    Given the standard_user enters valid credentials
+    When they click the Login button
+    Then they should be redirected to the Inventory page
 
-1. **TypeScript Integration**
-   - Προστέθηκε για καλύτερο type checking
-   - Βελτίωση της IDE υποστήριξης
-   - Αυτόματη τεκμηρίωση
-
-2. **Environment Configuration**
-   - Χρήση `.env` για διαχείριση credentials
-   - Διαχωρισμός test environments
-   - Ασφαλής διαχείριση sensitive data
-
-3. **Reporting**
-   - Cucumber HTML reports
-   - Screenshots on failure
-   - Video recording για failed tests
-
-## Part 2: API Testing Report
-
-### Framework Architecture Choices
-
-#### Technology Stack
-- **Playwright API Testing**
-  - Ενσωματωμένη υποστήριξη για HTTP requests
-  - TypeScript integration
-  - Καλύτερη διαχείριση responses
-
-#### Project Structure
-```
-├── features/
-│   └── api/
-│       └── pet.feature
-├── step-definitions/
-│   └── api/
-│       └── pet.steps.ts
-└── utils/
-    └── apiClient.ts
+  Scenario: Invalid credentials
+    Given the invalid_credentials_user has entered incorrect credentials
+    When they click the Login button
+    Then the error message "Epic sadface: Username and password do not match" should be displayed
 ```
 
-#### Design Patterns
-1. **API Client Pattern**
-   - Κεντρική διαχείριση HTTP requests
-   - Επανάχρηση κώδικα
-   - Καλύτερη διαχείριση headers και authentication
-
-2. **Cucumber BDD**
-   - Ίδια προσέγγιση με UI testing
-   - Αναγνώσιμα API test scenarios
-   - Ευκολότερη διαχείριση test data
-
-### Test Implementation
+### 2.2 API Testing
 
 #### Selected APIs
 1. **Pet API**
-   - POST /pet (Create)
-   - GET /pet/{petId} (Get)
-   - PUT /pet (Update)
-   - DELETE /pet/{petId} (Delete)
+   - POST /pet (Create pet)
+   - GET /pet/{petId} (Get pet)
+   - PUT /pet (Update pet)
+   - DELETE /pet/{petId} (Delete pet)
 
-### Technical Decisions & Challenges
+#### Test Cases
+```typescript
+test('should create a new pet (POST)', async ({ request }) => {
+  const response = await request.post(configLoader.getApiEndpoint('pet'), {
+    data: petData
+  });
+  expect(response.status()).toBe(200);
+});
+```
 
-1. **Request/Response Handling**
-   - JSON schema validation
-   - Dynamic test data generation
-   - Error handling
+## 3. Technical Decisions & Challenges
 
-2. **Environment Configuration**
-   - Base URL management
-   - API keys handling
-   - Test data separation
+### 3.1 Retry Logic for Eventual Consistency
+- **Implementation**: Custom retry mechanism με configurable attempts και delay
+- **Use Cases**: GET requests μετά από POST/PUT operations
+- **Benefits**: Αυξημένη αξιοπιστία tests
+- **Configuration**: Εύκολη προσαρμογή attempts και delay
 
-3. **Reporting**
-   - Request/Response logging
-   - Error details
-   - Test execution time
+### 3.2 TypeScript Integration
+- **Interfaces**: Σαφής ορισμός τύπων για όλα τα objects
+- **Type Safety**: Catch errors κατά το compile time
+- **Better IDE Support**: Enhanced development experience
+- **Documentation**: Types λειτουργούν ως τεκμηρίωση
 
-## Additional Information
+### 3.3 Request/Response Handling
+- **Response Validation**: Type-safe response handling
+- **Error Handling**: Structured error handling
+- **Logging**: Detailed request/response logging
+- **Assertions**: Type-safe assertions
 
-### Installation & Setup
-Για λεπτομερείς οδηγίες εγκατάστασης και εκτέλεσης των tests, ανατρέξτε στο `README.md`.
+### 3.4 Environment Configuration
+- **No .env Files**: Configuration μέσω JSON files
+- **Rationale**: Demo/playground APIs δεν χρειάζονται sensitive data
+- **Benefits**: Simpler setup, better version control
+- **Maintenance**: Εύκολη διαχείριση αλλαγών
 
-### Contributing
-Για οδηγίες συνεισφοράς στο project, ανατρέξτε στο `CONTRIBUTING.md`.
+## 4. Additional Information
 
-### Test Plan
-Για το πλήρες test plan και τα επιλεγμένα test cases, ανατρέξτε στο `TEST_PLAN.md`.
+Για περισσότερες πληροφορίες, ανατρέξτε στα:
+- `README.md`: Οδηγίες εγκατάστασης και χρήσης
+- `TEST_PLAN.md`: Λεπτομερές σχέδιο testing
