@@ -1,96 +1,147 @@
-Technologies Used:
+# Technical Task Report: UI & API Testing Framework
 
-Framework: Playwright
+## Part 1: UI Testing Report
 
-Language: TypeScript
+### Framework Architecture Choices
 
-Package Manager: npm
+#### Technology Stack
+- **Playwright**: Επιλέχθηκε ως το βασικό εργαλείο για UI testing λόγω:
+  - Εγγενής υποστήριξη για TypeScript
+  - Αυτόματη αναμονή για στοιχεία (auto-waiting)
+  - Cross-browser testing (Chromium, Firefox, WebKit)
+  - Ενσωματωμένη υποστήριξη για API testing
+  - Καλύτερη απόδοση σε σχέση με το Selenium
 
-Test Runner: Playwright Test (built-in)
+#### Project Structure
+```
+├── features/
+│   ├── ui/
+│   │   ├── login.feature
+│   │   └── inventory.feature
+│   └── api/
+│       └── pet.feature
+├── step-definitions/
+│   ├── ui/
+│   │   ├── login.steps.ts
+│   │   └── inventory.steps.ts
+│   └── api/
+│       └── pet.steps.ts
+├── pages/
+│   ├── login.page.ts
+│   └── inventory.page.ts
+├── utils/
+│   └── apiClient.ts
+└── data/
+    └── urls.json
+```
 
-Assertion Library: Playwright expect
+#### Design Patterns
+1. **Page Object Model (POM)**
+   - Χωρισμός της UI λογικής από τα test steps
+   - Επανάχρηση κώδικα και ευκολότερη συντήρηση
+   - Καλύτερη οργάνωση των selectors
 
-=========================================================
+2. **Cucumber BDD**
+   - Αναγνώσιμα test scenarios σε Gherkin syntax
+   - Καλύτερη επικοινωνία με μη-τεχνικούς stakeholders
+   - Ευκολότερη διαχείριση test data
 
-Project Structure & Architecture
+### Test Implementation
 
-The repository is structured in a modular way to clearly separate UI and API test concerns:
+#### Selected Features
+1. **Login Functionality**
+   - Valid login
+   - Invalid credentials
+   - Locked out user
 
+2. **Inventory Management**
+   - Add items to cart
+   - Remove items from cart
+   - Sort products
 
-UI Tests use the Page Object Model for abstraction.
+### Technical Decisions & Challenges
 
-API Tests utilize Playwright’s built-in request API.
+1. **TypeScript Integration**
+   - Προστέθηκε για καλύτερο type checking
+   - Βελτίωση της IDE υποστήριξης
+   - Αυτόματη τεκμηρίωση
 
-Utilities and test data are extracted into their own folders to keep tests clean and maintainable.
+2. **Environment Configuration**
+   - Χρήση `.env` για διαχείριση credentials
+   - Διαχωρισμός test environments
+   - Ασφαλής διαχείριση sensitive data
 
+3. **Reporting**
+   - Cucumber HTML reports
+   - Screenshots on failure
+   - Video recording για failed tests
 
-=========================================================
+## Part 2: API Testing Report
 
---UI Testing Plan (for https://www.saucedemo.com)
+### Framework Architecture Choices
 
--Major Feature 1: Login
+#### Technology Stack
+- **Playwright API Testing**
+  - Ενσωματωμένη υποστήριξη για HTTP requests
+  - TypeScript integration
+  - Καλύτερη διαχείριση responses
 
-Test Scenarios:
+#### Project Structure
+```
+├── features/
+│   └── api/
+│       └── pet.feature
+├── step-definitions/
+│   └── api/
+│       └── pet.steps.ts
+└── utils/
+    └── apiClient.ts
+```
 
-1.Login with valid credentials
+#### Design Patterns
+1. **API Client Pattern**
+   - Κεντρική διαχείριση HTTP requests
+   - Επανάχρηση κώδικα
+   - Καλύτερη διαχείριση headers και authentication
 
-2.Login with invalid credentials (wrong password)
+2. **Cucumber BDD**
+   - Ίδια προσέγγιση με UI testing
+   - Αναγνώσιμα API test scenarios
+   - Ευκολότερη διαχείριση test data
 
-3.Login with empty username and/or password fields
+### Test Implementation
 
-4.Attempt to access inventory while logged out.
+#### Selected APIs
+1. **Pet API**
+   - POST /pet (Create)
+   - GET /pet/{petId} (Get)
+   - PUT /pet (Update)
+   - DELETE /pet/{petId} (Delete)
 
--Major Feature 2: Add to Cart
-Test Scenarios:
+### Technical Decisions & Challenges
 
-1.Add all products to cart
-(recursively add everything to cart and assert that there are as many items are recursions(?) , and that the total is accurate.)
+1. **Request/Response Handling**
+   - JSON schema validation
+   - Dynamic test data generation
+   - Error handling
 
-2.Add individual item from item page
-(Recursively-optional) Open an item page and add to cart. assert that it has been added to cart with the correct information (cross check main page info with item page info and cart page item info using scenarioContext)
+2. **Environment Configuration**
+   - Base URL management
+   - API keys handling
+   - Test data separation
 
-3.Remove items from main page / item page / cart
-Remove an item from cart (main page)
-Remove an item from cart (item page)
-Remove an item from cart (cart page)
+3. **Reporting**
+   - Request/Response logging
+   - Error details
+   - Test execution time
 
+## Additional Information
 
--Major Feature 3: Check-Out
-Test scenarios:
+### Installation & Setup
+Για λεπτομερείς οδηγίες εγκατάστασης και εκτέλεσης των tests, ανατρέξτε στο `README.md`.
 
-1.Checkout with products
-proceed to checkout with one or more items in cart, assert that the data (prices, names etc.) are accurate
+### Contributing
+Για οδηγίες συνεισφοράς στο project, ανατρέξτε στο `CONTRIBUTING.md`.
 
-2.Checkout with empty cart
-proceed to checkout with no items in cart (expect error)
-
-3.Invalid shipping info
-proceed to check out with invalid shipping info. (expect error)
-
-
---API Testing Plan (https://petstore.swagger.io)
-
-Endpoint 1: /PET
-Test Scenarios:
-
-1. POST /pet   Successfully create a pet with valid data
-               Fail to create pet with invalid schema
-
-2. GET /pet    Fetch an existing pet by ID
-               Return 404 when pet does not exist
-
-3. PUT /pet    Update existing pet
-(After getting an existing pet by id e.g. status: available -> sold)
-
-Endpoint 2: store
-Test Scenarios:
-
-GET /store/inventory    Returns a map of status codes to quantities
-
-POST /store/order   Place an order for a pet
-
-GET /store/order/{orderId}  Find purchace order by ID 
-(maybe find the one I created in the post scenario)
-
-DELETE /store/order/{orderId}   Delete purchace order by ID 
-(maybe delete the one i created in the post scenario)
+### Test Plan
+Για το πλήρες test plan και τα επιλεγμένα test cases, ανατρέξτε στο `TEST_PLAN.md`.

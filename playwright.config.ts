@@ -14,12 +14,17 @@ export default defineConfig({
   reporter: 'html',
   
   use: {
+    baseURL: 'https://petstore.swagger.io/v2',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
 
   projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
     {
       name: 'ui-tests-desktop',
       use: {
